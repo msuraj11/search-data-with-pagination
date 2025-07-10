@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+span {
+  display: block;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.details {
+  margin: 2rem;
+  height: 20vh;
+  width: 40vh;
+  border: dotted;
+  background: rgb(236, 236, 170);
+}
+
+table {
+  height: 50%;
+  width: 80%;
+}
+
+td {
+  padding: 5px;
+}
