@@ -1,3 +1,5 @@
+import React from "react";
+
 export type RowData = {
   uid: string;
   name: string;
@@ -19,9 +21,23 @@ export type ElementTypes = React.ReactElement | JSX.Element;
 
 export type TableRow<T = Primitives> = Record<string, T>;
 
+export type PaginationProps = {
+  currentPage?: number;
+  totalPages?: number;
+  itemsPerPage?: number;
+  handleNextOrPrevClick?: (
+    page: number,
+    event: React.BaseSyntheticEvent
+  ) => void;
+};
+
 export type TablePropTypes<T = Primitives> = {
   tableData: TableRow<T>[];
-  searchWithKey: string;
   columnKeys: string[];
   renderAction: (row: TableRow<T>) => ElementTypes;
+  searchWithKey?: string;
+  paginationProps?: PaginationProps;
+  skipFilter?: boolean;
+  showLoader?: boolean;
+  hideTableHeader?: boolean;
 };

@@ -1,11 +1,15 @@
-import React, { useState, useMemo, type FC, type ReactElement } from "react";
+import React, { useState, useMemo } from "react";
 import { TablePropTypes } from "../shapes";
+import Pagination from "./Pagination";
 
-const TableWithFilter: FC<TablePropTypes> = ({
+const TableWithFilter: React.FC<TablePropTypes> = ({
   tableData,
-  searchWithKey,
+  searchWithKey = "",
   columnKeys,
   renderAction,
+  paginationProps,
+  skipFilter = false,
+  showLoader = false,
 }) => {
   const [searchInput, setInput] = useState("");
 
@@ -14,7 +18,7 @@ const TableWithFilter: FC<TablePropTypes> = ({
   }
 
   const filteredData = useMemo(() => {
-    return tableData.length > 0
+    return tableData.length > 0 && searchWithKey && !skipFilter
       ? tableData.filter((data) =>
           String(data[searchWithKey])
             .toLowerCase()
@@ -23,50 +27,43 @@ const TableWithFilter: FC<TablePropTypes> = ({
       : tableData;
   }, [tableData, searchInput]);
 
+  let renderTbody = null;
+  if (showLoader) {
+    renderTbody = "Loading ....";
+  } else {
+    renderTbody =
+      filteredData?.length > 0
+        ? filteredData.map((data) => (
+            <tr key={Math.random().toString(16).slice(2)}>
+              {columnKeys.map((key) => (
+                <td>{data[key] ?? renderAction(data)}</td>
+              ))}
+            </tr>
+          ))
+        : null;
+  }
+
   return (
     <>
-      <input
-        name="search"
-        value={searchInput}
-        onChange={handleInputChange}
-        placeholder="Search Person"
-      />
+      {!skipFilter && (
+        <input
+          name="search"
+          value={searchInput}
+          onChange={handleInputChange}
+          placeholder="Search Person"
+        />
+      )}
       <table>
         <thead>
           <tr>
-            <td>Id</td>
-            <td>Name</td>
-            <td>Action</td>
+            {columnKeys.map((key) => (
+              <td key={key}>{key.toUpperCase()}</td>
+            ))}
           </tr>
         </thead>
-        <tbody>
-          {filteredData?.length > 0 &&
-            filteredData.map((data) => (
-              <tr key={crypto.randomUUID()}>
-                {columnKeys.map((key) => (
-                  <td>{data[key] ?? renderAction(data)}</td>
-                ))}
-              </tr>
-            ))}
-        </tbody>
+        <tbody>{renderTbody}</tbody>
       </table>
-      {/* <div className="pagination">
-        <span className="button">
-          <button
-            name="prev"
-            disabled={page === 1}
-            onClick={handleClickPagination}
-          >
-            {"<<"}
-          </button>
-        </span>
-        <span>{page}</span>
-        <span className="button">
-          <button name="next" onClick={handleClickPagination}>
-            {">>"}
-          </button>
-        </span>
-      </div> */}
+      {paginationProps && <Pagination pagination={paginationProps} />}
     </>
   );
 };

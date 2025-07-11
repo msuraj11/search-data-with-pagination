@@ -8,38 +8,29 @@ import {
   TableRow,
 } from "./shapes";
 import "./styles.css";
-
-const columnKeys = ["uid", "name", "action"];
+import { API, columnKeys } from "./constants";
 
 export default function App() {
   const [fetchedData, setFetchedData] = useState<ResultData>([]);
   const [showDetails, setShowDetails] = useState<Details>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await fetch(
-          `https://swapi.tech/api/people?page=${page}&limit=10`
-        ).then((res) => res.json());
-        setFetchedData(res?.results);
-      } catch (error) {
-        console.log(error);
-        setFetchedData([]);
-      }
-      setIsLoading(false);
-    }
     fetchData();
-  }, [page]);
+  }, []);
 
-  function handleClickPagination(event: React.BaseSyntheticEvent) {
+  async function fetchData(goToPage = 1) {
     setIsLoading(true);
-    setShowDetails(null);
-    const buttonType = event.target.name;
-    setPage((prevPage) =>
-      buttonType === "prev" ? prevPage - 1 : prevPage + 1
-    );
+    try {
+      const res = await fetch(`${API}?page=${goToPage}&limit=10`).then((res) =>
+        res.json()
+      );
+      setFetchedData(res?.results);
+    } catch (error) {
+      console.log(error);
+      setFetchedData([]);
+    }
+    setIsLoading(false);
   }
 
   async function handleOpenDetails(event: React.BaseSyntheticEvent) {
@@ -53,10 +44,6 @@ export default function App() {
       details = await fetch(event.target.name)
         .then((res) => res.json())
         .then((data) => data.result);
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth", // optional for smooth scrolling
-      });
     } catch (error) {
       console.log(error);
       setShowDetails(null);
@@ -84,6 +71,11 @@ export default function App() {
     [showDetails?.uid]
   );
 
+  function handleNextOrPrevClick(goToPage: number) {
+    setIsLoading(true);
+    fetchData(goToPage);
+  }
+
   const details: Keys[] | null =
     showDetails && (Object.keys(showDetails) as Keys[]);
 
@@ -94,6 +86,8 @@ export default function App() {
         searchWithKey="name"
         columnKeys={columnKeys}
         renderAction={handleRenderAction}
+        paginationProps={{ handleNextOrPrevClick }}
+        showLoader={isLoading}
       />
       {showDetails && (
         <table className="details">
