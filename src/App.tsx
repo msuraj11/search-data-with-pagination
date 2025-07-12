@@ -21,6 +21,7 @@ export default function App() {
 
   async function fetchData(goToPage = 1) {
     setIsLoading(true);
+    setShowDetails(null);
     try {
       const res = await fetch(`${API}?page=${goToPage}&limit=10`).then((res) =>
         res.json()
@@ -35,7 +36,7 @@ export default function App() {
 
   async function handleOpenDetails(event: React.BaseSyntheticEvent) {
     const currentUid = event.target.name.split("/").pop();
-    if (showDetails && currentUid === showDetails?.uid) {
+    if (showDetails && showDetails?.uid === currentUid) {
       setShowDetails(null);
       return;
     }
@@ -48,14 +49,15 @@ export default function App() {
       console.log(error);
       setShowDetails(null);
     }
-    const {
-      name = null,
-      mass = null,
-      gender = null,
-      eye_color = null,
-      height = null,
-    } = details?.properties;
-    setShowDetails({ name, mass, gender, eye_color, height, uid: currentUid });
+    const { name, mass, gender, eye_color, height } = details?.properties;
+    setShowDetails({
+      name,
+      mass,
+      gender,
+      eye_color,
+      height,
+      uid: currentUid,
+    });
   }
 
   const handleRenderAction = useCallback(
@@ -80,7 +82,7 @@ export default function App() {
     showDetails && (Object.keys(showDetails) as Keys[]);
 
   return (
-    <div className="container">
+    <main className="container">
       <TableWithFilter
         tableData={fetchedData}
         searchWithKey="name"
@@ -90,17 +92,15 @@ export default function App() {
         showLoader={isLoading}
       />
       {showDetails && (
-        <table className="details">
-          <tbody>
-            {details?.map((key: keyof DetailsObjectShape) => (
-              <tr>
-                <td>{key}</td>
-                <td>{showDetails[key]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <section className="details">
+          {details?.map((key: keyof DetailsObjectShape) => (
+            <div className="row" key={key}>
+              <label>{key}</label>
+              <span>{showDetails[key]}</span>
+            </div>
+          ))}
+        </section>
       )}
-    </div>
+    </main>
   );
 }

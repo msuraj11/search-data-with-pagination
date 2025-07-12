@@ -33,8 +33,8 @@ export type PaginationProps = {
 
 export type TablePropTypes<T = Primitives> = {
   tableData: TableRow<T>[];
-  columnKeys: string[];
-  renderAction: (row: TableRow<T>) => ElementTypes;
+  columnKeys?: string[];
+  renderAction?: (row: TableRow<T>) => ElementTypes;
   searchWithKey?: string;
   paginationProps?: PaginationProps;
   skipFilter?: boolean;

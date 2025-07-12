@@ -6,10 +6,11 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
   tableData,
   searchWithKey = "",
   columnKeys,
-  renderAction,
+  renderAction = () => {},
   paginationProps,
   skipFilter = false,
   showLoader = false,
+  hideTableHeader = false,
 }) => {
   const [searchInput, setInput] = useState("");
 
@@ -35,8 +36,8 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
       filteredData?.length > 0
         ? filteredData.map((data) => (
             <tr key={Math.random().toString(16).slice(2)}>
-              {columnKeys.map((key) => (
-                <td>{data[key] ?? renderAction(data)}</td>
+              {columnKeys?.map((key) => (
+                <td>{data[key] ?? renderAction(data) ?? ""}</td>
               ))}
             </tr>
           ))
@@ -54,13 +55,15 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
         />
       )}
       <table>
-        <thead>
-          <tr>
-            {columnKeys.map((key) => (
-              <td key={key}>{key.toUpperCase()}</td>
-            ))}
-          </tr>
-        </thead>
+        {!hideTableHeader && (
+          <thead>
+            <tr>
+              {columnKeys?.map((key) => (
+                <td key={key}>{key.toUpperCase()}</td>
+              ))}
+            </tr>
+          </thead>
+        )}
         <tbody>{renderTbody}</tbody>
       </table>
       {paginationProps && <Pagination pagination={paginationProps} />}
