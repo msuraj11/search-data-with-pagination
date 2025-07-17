@@ -28,24 +28,8 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
       : tableData;
   }, [tableData, searchInput]);
 
-  let renderTbody = null;
-  if (showLoader) {
-    renderTbody = "Loading ....";
-  } else {
-    renderTbody =
-      filteredData?.length > 0
-        ? filteredData.map((data) => (
-            <tr key={Math.random().toString(16).slice(2)}>
-              {columnKeys?.map((key) => (
-                <td>{data[key] ?? renderAction(data) ?? ""}</td>
-              ))}
-            </tr>
-          ))
-        : null;
-  }
-
   return (
-    <>
+    <div className="table-container">
       {!skipFilter && (
         <input
           name="search"
@@ -64,10 +48,26 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
             </tr>
           </thead>
         )}
-        <tbody>{renderTbody}</tbody>
+        <tbody>
+          {filteredData?.length > 0
+            ? filteredData.map((data) => (
+                <tr key={Math.random().toString(16).slice(2)}>
+                  {columnKeys?.map((key) => (
+                    <td>
+                      {showLoader ? (
+                        <div className="skeleton skeleton-text" />
+                      ) : (
+                        data[key] ?? renderAction(data) ?? ""
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            : "No Data to show"}
+        </tbody>
       </table>
       {paginationProps && <Pagination pagination={paginationProps} />}
-    </>
+    </div>
   );
 };
 
