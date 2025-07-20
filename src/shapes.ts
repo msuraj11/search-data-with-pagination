@@ -36,6 +36,7 @@ export type TablePropTypes<T = Primitives> = {
   columnKeys?: string[];
   renderAction?: (row: TableRow<T>) => ElementTypes;
   searchWithKey?: string;
+  searchPlaceHolder?: string;
   paginationProps?: PaginationProps;
   skipFilter?: boolean;
   showLoader?: boolean;

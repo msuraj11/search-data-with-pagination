@@ -5,6 +5,7 @@ import Pagination from "./Pagination";
 const TableWithFilter: React.FC<TablePropTypes> = ({
   tableData,
   searchWithKey = "",
+  searchPlaceHolder = "Search",
   columnKeys,
   renderAction = () => {},
   paginationProps,
@@ -12,6 +13,7 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
   showLoader = false,
   hideTableHeader = false,
 }) => {
+  console.log("RENDERING");
   const [searchInput, setInput] = useState("");
 
   function handleInputChange(event: React.BaseSyntheticEvent) {
@@ -28,47 +30,67 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
       : tableData;
   }, [tableData, searchInput]);
 
+  let tableBody: React.ReactElement | React.ReactElement[] = (
+    <tr>
+      {Array(columnKeys?.length)
+        .fill(null)
+        .map((_, k) => (
+          <td key={Math.pow(k + 1, k + 1)}>
+            {showLoader ? (
+              <div className="skeleton skeleton-text" />
+            ) : (
+              columnKeys &&
+              k === Math.floor(columnKeys?.length / 2) &&
+              "No Data"
+            )}
+          </td>
+        ))}
+    </tr>
+  );
+
+  if (filteredData?.length > 0) {
+    tableBody = filteredData.map((data) => (
+      <tr key={Math.random().toString(16).slice(2)}>
+        {columnKeys?.map((key) => (
+          <td key={key}>
+            {showLoader ? (
+              <div className="skeleton skeleton-text" />
+            ) : (
+              data[key] ?? renderAction(data) ?? ""
+            )}
+          </td>
+        ))}
+      </tr>
+    ));
+  }
+
   return (
-    <div className="table-container">
+    <section className="table-section">
       {!skipFilter && (
         <input
           name="search"
           value={searchInput}
           onChange={handleInputChange}
-          placeholder="Search Person"
+          placeholder={searchPlaceHolder}
         />
       )}
-      <table>
-        {!hideTableHeader && (
-          <thead>
-            <tr>
-              {columnKeys?.map((key) => (
-                <td key={key}>{key.toUpperCase()}</td>
-              ))}
-            </tr>
-          </thead>
-        )}
-        <tbody>
-          {filteredData?.length > 0
-            ? filteredData.map((data) => (
-                <tr key={Math.random().toString(16).slice(2)}>
-                  {columnKeys?.map((key) => (
-                    <td>
-                      {showLoader ? (
-                        <div className="skeleton skeleton-text" />
-                      ) : (
-                        data[key] ?? renderAction(data) ?? ""
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))
-            : "No Data to show"}
-        </tbody>
-      </table>
+      <div className="table-container">
+        <table>
+          {!hideTableHeader && (
+            <thead>
+              <tr>
+                {columnKeys?.map((key) => (
+                  <th key={key}>{key.toUpperCase()}</th>
+                ))}
+              </tr>
+            </thead>
+          )}
+          <tbody>{tableBody}</tbody>
+        </table>
+      </div>
       {paginationProps && <Pagination pagination={paginationProps} />}
-    </div>
+    </section>
   );
 };
 
-export default TableWithFilter;
+export default React.memo(TableWithFilter);

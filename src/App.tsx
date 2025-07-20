@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import TableWithFilter from "./components/TableWithFilter";
 import {
   Details,
@@ -23,7 +23,7 @@ export default function App() {
     setIsLoading(true);
     setShowDetails(null);
     try {
-      const res = await fetch(`${API}?page=${goToPage}&limit=10`).then((res) =>
+      const res = await fetch(`${API}?page=${goToPage}&limit=20`).then((res) =>
         res.json()
       );
       setFetchedData(res?.results);
@@ -81,14 +81,17 @@ export default function App() {
   const details: Keys[] | null =
     showDetails && (Object.keys(showDetails) as Keys[]);
 
+  const paginationProps = useMemo(() => ({ handleNextOrPrevClick }), []);
+
   return (
     <main className="container">
       <TableWithFilter
         tableData={fetchedData}
         searchWithKey="name"
+        searchPlaceHolder="Search Person"
         columnKeys={columnKeys}
         renderAction={handleRenderAction}
-        paginationProps={{ handleNextOrPrevClick }}
+        paginationProps={paginationProps}
         showLoader={isLoading}
       />
       {showDetails && (
