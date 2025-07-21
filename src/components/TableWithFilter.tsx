@@ -16,7 +16,7 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
 }) => {
   const [searchInput, setInput] = useState("");
 
-  function handleInputChange(event: React.BaseSyntheticEvent) {
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInput(event.target.value);
   }
 

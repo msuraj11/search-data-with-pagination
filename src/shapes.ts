@@ -27,7 +27,7 @@ export type PaginationProps = {
   itemsPerPage?: number;
   handleNextOrPrevClick?: (
     page: number,
-    event: React.BaseSyntheticEvent
+    event: React.MouseEvent<HTMLButtonElement>
   ) => void;
 };
 
@@ -46,9 +46,9 @@ export type TablePropTypes<T = Primitives> = {
 export type InputPropTypes = {
   name: string;
   value: string;
-  onChange: (event: React.BaseSyntheticEvent) => void;
-  onFocus?: (event: React.BaseSyntheticEvent) => void;
-  onBlur?: (event: React.BaseSyntheticEvent) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
   label?: string;
 };

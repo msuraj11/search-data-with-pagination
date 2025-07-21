@@ -45,7 +45,7 @@ const Input: React.FC<InputPropTypes> = ({
     };
   }, [isDeleting, placeholder]);
 
-  function handleFocus(event: React.BaseSyntheticEvent) {
+  function handleFocus(event: React.FocusEvent<HTMLInputElement>) {
     if (timeoutRef.current) clearInterval(timeoutRef.current);
     setPlaceHolderText("");
     if (onFocus) {
@@ -53,7 +53,7 @@ const Input: React.FC<InputPropTypes> = ({
     }
   }
 
-  function handleBlur(event: React.BaseSyntheticEvent) {
+  function handleBlur(event: React.FocusEvent<HTMLInputElement>) {
     setPlaceHolderText(placeholder);
     if (onBlur) {
       onBlur(event);
