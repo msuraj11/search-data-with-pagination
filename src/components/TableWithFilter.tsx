@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from "react";
 import { TablePropTypes } from "../shapes";
 import Pagination from "./Pagination";
+import Input from "./Input";
 
 const TableWithFilter: React.FC<TablePropTypes> = ({
   tableData,
   searchWithKey = "",
-  searchPlaceHolder = "Search",
+  searchPlaceHolder,
   columnKeys,
   renderAction = () => {},
   paginationProps,
@@ -13,7 +14,6 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
   showLoader = false,
   hideTableHeader = false,
 }) => {
-  console.log("RENDERING");
   const [searchInput, setInput] = useState("");
 
   function handleInputChange(event: React.BaseSyntheticEvent) {
@@ -65,9 +65,9 @@ const TableWithFilter: React.FC<TablePropTypes> = ({
   }
 
   return (
-    <section className="table-section">
+    <section>
       {!skipFilter && (
-        <input
+        <Input
           name="search"
           value={searchInput}
           onChange={handleInputChange}

@@ -42,3 +42,13 @@ export type TablePropTypes<T = Primitives> = {
   showLoader?: boolean;
   hideTableHeader?: boolean;
 };
+
+export type InputPropTypes = {
+  name: string;
+  value: string;
+  onChange: (event: React.BaseSyntheticEvent) => void;
+  onFocus?: (event: React.BaseSyntheticEvent) => void;
+  onBlur?: (event: React.BaseSyntheticEvent) => void;
+  placeholder?: string;
+  label?: string;
+};
